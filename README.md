@@ -63,3 +63,4 @@ python app.py
 - 輸入http://localhost:15000/進入首頁。
 - 首次使用請點選註冊按鈕，並註冊帳號。
 - 註冊後，點選登入即可進入頁面。
+# DB_project1

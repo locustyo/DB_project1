@@ -1,5 +1,6 @@
 from typing import Optional
 from link import *
+from flask import flash
 
 class DB():
     def connect():
@@ -27,6 +28,8 @@ class DB():
 
     def commit():
         connection.commit()
+
+
 
 class Member():
     def get_member(account):
@@ -76,34 +79,37 @@ class Cart():
        
 class Product():
     def count():
-        sql = 'SELECT COUNT(*) FROM PRODUCT'
+        sql = 'SELECT COUNT(*) FROM VIDEOS'
         return DB.fetchone(DB.execute( DB.connect(), sql))
     
     def get_product(pid):
-        sql ='SELECT * FROM PRODUCT WHERE PID = :id'
+        sql ='SELECT * FROM VIDEOS WHERE VID = :id'
         return DB.fetchone(DB.execute_input(DB.prepare(sql), {'id': pid}))
 
     def get_all_product():
-        sql = 'SELECT * FROM PRODUCT'
+        sql = 'SELECT * FROM VIDEOS'
         return DB.fetchall(DB.execute( DB.connect(), sql))
     
     def get_name(pid):
-        sql = 'SELECT PNAME FROM PRODUCT WHERE PID = :id'
+        sql = 'SELECT TITLE FROM VIDEOS WHERE PID = :id'
         return DB.fetchone(DB.execute_input( DB.prepare(sql), {'id':pid}))[0]
 
-    def add_product(input):
-        sql = 'INSERT INTO PRODUCT VALUES (:pid, :name, :price, :category, :description)'
+    def get_name_exist(name):
+        sql = 'SELECT count(*) FROM VIDEOS WHERE TITLE = :name'
+        return DB.fetchone(DB.execute_input( DB.prepare(sql), {'name':name}))[0]
 
+    def add_product(input):
+        sql = 'INSERT INTO VIDEOS (vID, title, upload_date, classify, link) VALUES (:pid, :name, :price, :category, :description)'
         DB.execute_input(DB.prepare(sql), input)
         DB.commit()
     
     def delete_product(pid):
-        sql = 'DELETE FROM PRODUCT WHERE PID = :id '
+        sql = 'DELETE FROM VIDEOS WHERE VID = :id '
         DB.execute_input(DB.prepare(sql), {'id': pid})
         DB.commit()
 
     def update_product(input):
-        sql = 'UPDATE PRODUCT SET PNAME=:name, PRICE=:price, CATEGORY=:category, PDESC=:description WHERE PID=:pid'
+        sql = 'UPDATE VIDEOS SET TITLE=:name, UPLOAD_DATE=:price, CLASSIFY=:category, LINK=:description WHERE VID=:pid'
         DB.execute_input(DB.prepare(sql), input)
         DB.commit()
     
@@ -181,3 +187,61 @@ class Analysis():
     def member_sale_count():
         sql = 'SELECT COUNT(*), MEMBER.MID, MEMBER.NAME FROM ORDER_LIST, MEMBER WHERE ORDER_LIST.MID = MEMBER.MID AND MEMBER.IDENTITY = :identity GROUP BY MEMBER.MID, MEMBER.NAME ORDER BY COUNT(*) DESC'
         return DB.fetchall( DB.execute_input( DB.prepare(sql), {'identity':'user'}))
+
+class Transaction():
+    def __init__(self, pid, user_id, mid, timestamp):
+        self.pid = pid
+        self.user_id = user_id
+        self.mid = mid
+        self.timestamp = timestamp
+
+    def save(self):
+        sql = 'INSERT INTO GROUP10.TRANSACTIONS (TID, TRANSACTION_DATE, BUY_ID, mID) VALUES (TID_INCREASE.NEXTVAL, :timestamp, :pid, :mid)'
+        DB.execute_input(DB.prepare(sql), {'timestamp': self.timestamp, 'pid': self.pid, 'mid': self.mid})
+        DB.commit()
+
+    def check_purchase(pid, mid):
+        sql = 'SELECT count(*) FROM transactions WHERE buy_id = :pid AND mid = :mid'
+#        flash(f"SQL:{sql},pid: {pid},mid: {mid}")
+        sql = '''
+        SELECT count(*)
+        FROM transactions
+        WHERE (buy_id = :pid AND mid = :mid)
+           OR (buy_id IN (SELECT pID FROM contain WHERE vids LIKE '%' || :pid || '%') AND mid = :mid)
+        '''
+        result = DB.execute_input(DB.prepare(sql), {'pid': pid, 'mid': mid})
+        count = DB.fetchall(result)
+#        flash(f"count: {count}")
+        return count
+
+    def get_user_purchases(mid):
+        sql = '''
+        SELECT t.tid, v.vId, v.title, v.upload_date, p.pId, p.title as plan_title,t.TRANSACTION_DATE
+FROM GROUP10.TRANSACTIONS t
+LEFT JOIN GROUP10.VIDEOS v ON v.vId = t.BUY_ID AND t.BUY_ID LIKE 'v%'
+LEFT JOIN GROUP10.PLANS p ON p.pId = t.BUY_ID AND t.BUY_ID NOT LIKE 'v%'
+where mid = :mid
+        '''
+        result = DB.execute_input(DB.prepare(sql), {'mid': mid})
+        purchases = DB.fetchall(result)
+        flash(f"purchases: {purchases}")
+        return purchases
+
+    def delete_by_tid(tid):
+        sql = 'DELETE FROM transactions WHERE tid = :tid'
+        DB.execute_input(DB.prepare(sql), {'tid': tid})
+        DB.commit()
+
+class Plan():
+    def get_all_plans():
+        sql = 'SELECT * FROM Plans'
+        plans = DB.fetchall(DB.execute(DB.connect(), sql))
+        return plans
+
+    def get_videos_by_plan(pid):
+        sql = 'SELECT vIDs FROM Contain WHERE pID = :pid'
+        result = DB.execute_input(DB.prepare(sql), {'pid': pid})
+        video_ids = DB.fetchall(result)
+        return video_ids
+
+

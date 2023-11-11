@@ -51,10 +51,10 @@ def book():
     book_data = []
     for i in book_row:
         book = {
-            '商品編號': i[0],
-            '商品名稱': i[1],
-            '商品售價': i[2],
-            '商品類別': i[3]
+            '影片編號': i[0],
+            '影片名稱': i[1],
+            '影片上傳': i[2],
+            '影片分級': i[3]
         }
         book_data.append(book)
     return book_data
@@ -66,18 +66,20 @@ def add():
         while(data != None):
             number = str(random.randrange( 10000, 99999))
             en = random.choice(string.ascii_letters)
+            en = 'v'
             pid = en + number
             data = Product.get_product(pid)
 
-        name = request.values.get('name')
-        price = request.values.get('price')
-        category = request.values.get('category')
-        description = request.values.get('description')
+        name = request.values.get('title')
+        price = request.values.get('upload_date')
+        category = request.values.get('classify')
+        description = request.values.get('link')
 
-        if (len(name) < 1 or len(price) < 1):
+        if (len(name) < 1 or len(price) < 1) :            
             return redirect(url_for('manager.productManager'))
-        
-        Product.add_product(
+        if Product.get_name_exist(name):
+            flash('failed')            
+        else: Product.add_product(
             {'pid' : pid,
              'name' : name,
              'price' : price,
@@ -89,6 +91,7 @@ def add():
         return redirect(url_for('manager.productManager'))
 
     return render_template('productManager.html')
+
 
 @manager.route('/edit', methods=['GET', 'POST'])
 @login_required

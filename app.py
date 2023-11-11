@@ -16,7 +16,7 @@ from werkzeug.utils import secure_filename
 ## Flask-Login : 確保未登入者不能使用系統
 app = Flask(__name__)
 app.secret_key = 'Your Key' 
-
+app.jinja_env.globals.update(check_purchase=Transaction.check_purchase)
 app.register_blueprint(api, url_prefix='/')
 app.register_blueprint(store, url_prefix='/bookstore')
 app.register_blueprint(analysis, url_prefix='/backstage')
@@ -31,4 +31,4 @@ def index():
 if __name__ == '__main__':
     app.debug = True
     app.secret_key = "Your Key"
-    app.run()
+    app.run(host='0.0.0.0')

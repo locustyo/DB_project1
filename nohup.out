@@ -1,0 +1,139 @@
+ * Serving Flask app 'app' (lazy loading)
+ * Environment: production
+   WARNING: This is a development server. Do not use it in a production deployment.
+   Use a production WSGI server instead.
+ * Debug mode: on
+ * Running on all addresses.
+   WARNING: This is a development server. Do not use it in a production deployment.
+ * Running on http://192.168.100.219:5000/ (Press CTRL+C to quit)
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 899-200-117
+140.117.14.11 - - [12/Oct/2023 13:42:37] "GET /bookstore/ HTTP/1.1" 200 -
+140.117.14.11 - - [12/Oct/2023 13:42:37] "GET /static/offcanvas.js HTTP/1.1" 404 -
+140.117.14.11 - - [12/Oct/2023 13:42:37] "GET /static/offcanvas.css HTTP/1.1" 404 -
+140.117.14.11 - - [12/Oct/2023 13:42:37] "GET /static/img/weblogo.ico HTTP/1.1" 304 -
+140.117.14.11 - - [12/Oct/2023 13:42:40] "GET /bookstore/ HTTP/1.1" 200 -
+140.117.14.11 - - [12/Oct/2023 13:42:40] "GET /static/offcanvas.css HTTP/1.1" 404 -
+140.117.14.11 - - [12/Oct/2023 13:42:40] "GET /static/offcanvas.js HTTP/1.1" 404 -
+140.117.14.11 - - [12/Oct/2023 13:42:41] "GET /bookstore/cart HTTP/1.1" 200 -
+140.117.14.11 - - [12/Oct/2023 13:42:41] "GET /static/offcanvas.css HTTP/1.1" 404 -
+140.117.14.11 - - [12/Oct/2023 13:42:41] "GET /static/offcanvas.js HTTP/1.1" 404 -
+140.117.14.11 - - [12/Oct/2023 13:42:41] "GET /static/img/empty_cart.png HTTP/1.1" 304 -
+140.117.14.11 - - [12/Oct/2023 13:42:42] "GET /bookstore/orderlist HTTP/1.1" 200 -
+140.117.14.11 - - [12/Oct/2023 13:42:43] "GET /static/offcanvas.css HTTP/1.1" 404 -
+140.117.14.11 - - [12/Oct/2023 13:42:43] "GET /static/offcanvas.js HTTP/1.1" 404 -
+140.117.14.11 - - [12/Oct/2023 13:42:43] "GET /bookstore/ HTTP/1.1" 200 -
+140.117.14.11 - - [12/Oct/2023 13:42:43] "GET /static/offcanvas.css HTTP/1.1" 404 -
+140.117.14.11 - - [12/Oct/2023 13:42:43] "GET /static/offcanvas.js HTTP/1.1" 404 -
+140.117.14.11 - - [12/Oct/2023 13:42:44] "GET /bookstore/ HTTP/1.1" 200 -
+140.117.14.11 - - [12/Oct/2023 13:42:45] "GET /static/offcanvas.css HTTP/1.1" 404 -
+140.117.14.11 - - [12/Oct/2023 13:42:45] "GET /static/offcanvas.js HTTP/1.1" 404 -
+140.117.14.11 - - [12/Oct/2023 13:42:45] "GET /bookstore/orderlist HTTP/1.1" 200 -
+140.117.14.11 - - [12/Oct/2023 13:42:45] "GET /static/offcanvas.css HTTP/1.1" 404 -
+140.117.14.11 - - [12/Oct/2023 13:42:45] "GET /static/offcanvas.js HTTP/1.1" 404 -
+140.117.14.11 - - [12/Oct/2023 13:42:46] "GET /bookstore/cart HTTP/1.1" 200 -
+140.117.14.11 - - [12/Oct/2023 13:42:46] "GET /static/offcanvas.css HTTP/1.1" 404 -
+140.117.14.11 - - [12/Oct/2023 13:42:46] "GET /static/offcanvas.js HTTP/1.1" 404 -
+140.117.14.11 - - [12/Oct/2023 13:42:46] "GET /static/img/empty_cart.png HTTP/1.1" 304 -
+140.117.14.11 - - [12/Oct/2023 13:42:46] "GET /bookstore/ HTTP/1.1" 200 -
+140.117.14.11 - - [12/Oct/2023 13:42:47] "GET /static/offcanvas.css HTTP/1.1" 404 -
+140.117.14.11 - - [12/Oct/2023 13:42:47] "GET /static/offcanvas.js HTTP/1.1" 404 -
+ * Serving Flask app 'app' (lazy loading)
+ * Environment: production
+   WARNING: This is a development server. Do not use it in a production deployment.
+   Use a production WSGI server instead.
+ * Debug mode: on
+ * Running on all addresses.
+   WARNING: This is a development server. Do not use it in a production deployment.
+ * Running on http://192.168.100.219:5000/ (Press CTRL+C to quit)
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 899-200-117
+140.117.14.11 - - [12/Oct/2023 13:43:42] "GET /bookstore/ HTTP/1.1" 200 -
+140.117.14.11 - - [12/Oct/2023 13:43:43] "GET /static/offcanvas.css HTTP/1.1" 404 -
+140.117.14.11 - - [12/Oct/2023 13:43:43] "GET /static/offcanvas.js HTTP/1.1" 404 -
+140.117.14.11 - - [12/Oct/2023 13:43:43] "GET /static/img/weblogo.ico HTTP/1.1" 304 -
+140.117.14.11 - - [12/Oct/2023 13:43:43] "GET /bookstore/ HTTP/1.1" 200 -
+140.117.14.11 - - [12/Oct/2023 13:43:44] "GET /static/offcanvas.css HTTP/1.1" 404 -
+140.117.14.11 - - [12/Oct/2023 13:43:44] "GET /static/offcanvas.js HTTP/1.1" 404 -
+140.117.14.11 - - [12/Oct/2023 13:43:44] "GET /static/img/weblogo.ico HTTP/1.1" 200 -
+140.117.14.11 - - [12/Oct/2023 13:43:45] "GET /bookstore/ HTTP/1.1" 200 -
+140.117.14.11 - - [12/Oct/2023 13:43:45] "GET /static/offcanvas.css HTTP/1.1" 404 -
+140.117.14.11 - - [12/Oct/2023 13:43:45] "GET /static/offcanvas.js HTTP/1.1" 404 -
+140.117.14.11 - - [12/Oct/2023 13:43:46] "GET /bookstore/cart HTTP/1.1" 200 -
+140.117.14.11 - - [12/Oct/2023 13:43:46] "GET /static/offcanvas.css HTTP/1.1" 404 -
+140.117.14.11 - - [12/Oct/2023 13:43:46] "GET /static/offcanvas.js HTTP/1.1" 404 -
+140.117.14.11 - - [12/Oct/2023 13:43:46] "GET /static/img/empty_cart.png HTTP/1.1" 304 -
+140.117.14.11 - - [12/Oct/2023 13:43:55] "GET /backstage HTTP/1.1" 308 -
+140.117.14.11 - - [12/Oct/2023 13:43:55] "GET /backstage/ HTTP/1.1" 302 -
+140.117.14.11 - - [12/Oct/2023 13:43:55] "GET /backstage/productManager HTTP/1.1" 302 -
+140.117.14.11 - - [12/Oct/2023 13:43:55] "GET / HTTP/1.1" 200 -
+140.117.14.11 - - [12/Oct/2023 13:43:56] "GET /static/img/home.png HTTP/1.1" 304 -
+140.117.14.11 - - [12/Oct/2023 13:43:56] "GET /static/css/template.css HTTP/1.1" 304 -
+140.117.14.11 - - [12/Oct/2023 13:43:56] "GET /favicon.ico HTTP/1.1" 404 -
+140.117.14.11 - - [12/Oct/2023 13:43:57] "GET /login HTTP/1.1" 200 -
+140.117.14.11 - - [12/Oct/2023 13:43:58] "GET /static/css/template.css HTTP/1.1" 304 -
+140.117.14.11 - - [12/Oct/2023 13:43:58] "GET /static/img/home.png HTTP/1.1" 304 -
+140.117.14.11 - - [12/Oct/2023 13:44:01] "POST /login HTTP/1.1" 302 -
+140.117.14.11 - - [12/Oct/2023 13:44:01] "GET /bookstore/ HTTP/1.1" 200 -
+140.117.14.11 - - [12/Oct/2023 13:44:01] "GET /static/offcanvas.css HTTP/1.1" 404 -
+140.117.14.11 - - [12/Oct/2023 13:44:01] "GET /static/offcanvas.js HTTP/1.1" 404 -
+140.117.14.11 - - [12/Oct/2023 13:44:01] "GET /static/img/weblogo.ico HTTP/1.1" 304 -
+140.117.14.11 - - [12/Oct/2023 13:44:04] "GET /backstage/ HTTP/1.1" 302 -
+140.117.14.11 - - [12/Oct/2023 13:44:04] "GET /backstage/productManager HTTP/1.1" 302 -
+140.117.14.11 - - [12/Oct/2023 13:44:04] "GET / HTTP/1.1" 200 -
+140.117.14.11 - - [12/Oct/2023 13:44:04] "GET /static/css/template.css HTTP/1.1" 304 -
+140.117.14.11 - - [12/Oct/2023 13:44:04] "GET /static/img/home.png HTTP/1.1" 304 -
+140.117.14.11 - - [12/Oct/2023 13:50:26] "GET /backstage/ HTTP/1.1" 302 -
+140.117.14.11 - - [12/Oct/2023 13:50:26] "GET /backstage/productManager HTTP/1.1" 302 -
+140.117.14.11 - - [12/Oct/2023 13:50:26] "GET / HTTP/1.1" 200 -
+140.117.14.11 - - [12/Oct/2023 13:50:26] "GET /static/img/home.png HTTP/1.1" 304 -
+140.117.14.11 - - [12/Oct/2023 13:50:26] "GET /static/css/template.css HTTP/1.1" 304 -
+140.117.14.11 - - [12/Oct/2023 13:50:31] "GET /backstage/ HTTP/1.1" 302 -
+140.117.14.11 - - [12/Oct/2023 13:50:31] "GET /backstage/productManager HTTP/1.1" 302 -
+140.117.14.11 - - [12/Oct/2023 13:50:31] "GET / HTTP/1.1" 200 -
+140.117.14.11 - - [12/Oct/2023 13:50:32] "GET /static/css/template.css HTTP/1.1" 304 -
+140.117.14.11 - - [12/Oct/2023 13:50:32] "GET /static/img/home.png HTTP/1.1" 304 -
+140.117.14.11 - - [12/Oct/2023 13:50:40] "GET /backstage/productManager HTTP/1.1" 302 -
+140.117.14.11 - - [12/Oct/2023 13:50:40] "GET / HTTP/1.1" 200 -
+140.117.14.11 - - [12/Oct/2023 13:50:41] "GET /static/css/template.css HTTP/1.1" 304 -
+140.117.14.11 - - [12/Oct/2023 13:50:41] "GET /static/img/home.png HTTP/1.1" 304 -
+140.117.14.11 - - [12/Oct/2023 13:50:43] "GET /backstage/ HTTP/1.1" 302 -
+140.117.14.11 - - [12/Oct/2023 13:50:43] "GET /backstage/productManager HTTP/1.1" 302 -
+140.117.14.11 - - [12/Oct/2023 13:50:43] "GET / HTTP/1.1" 200 -
+140.117.14.11 - - [12/Oct/2023 13:50:43] "GET /static/css/template.css HTTP/1.1" 304 -
+140.117.14.11 - - [12/Oct/2023 13:50:43] "GET /static/img/home.png HTTP/1.1" 304 -
+140.117.14.11 - - [12/Oct/2023 13:50:45] "GET /register HTTP/1.1" 200 -
+140.117.14.11 - - [12/Oct/2023 13:50:45] "GET /static/css/template.css HTTP/1.1" 304 -
+140.117.14.11 - - [12/Oct/2023 13:50:45] "GET /static/img/home.png HTTP/1.1" 304 -
+140.117.14.11 - - [12/Oct/2023 13:51:11] "POST /register HTTP/1.1" 302 -
+140.117.14.11 - - [12/Oct/2023 13:51:11] "GET /login HTTP/1.1" 200 -
+140.117.14.11 - - [12/Oct/2023 13:51:11] "GET /favicon.ico HTTP/1.1" 404 -
+140.117.14.11 - - [12/Oct/2023 13:51:11] "GET /static/img/home.png HTTP/1.1" 304 -
+140.117.14.11 - - [12/Oct/2023 13:51:11] "GET /static/css/template.css HTTP/1.1" 304 -
+140.117.14.11 - - [12/Oct/2023 13:51:11] "GET /favicon.ico HTTP/1.1" 404 -
+140.117.14.11 - - [12/Oct/2023 13:51:17] "POST /login HTTP/1.1" 302 -
+140.117.14.11 - - [12/Oct/2023 13:51:17] "GET /login HTTP/1.1" 200 -
+140.117.14.11 - - [12/Oct/2023 13:51:18] "GET /static/css/template.css HTTP/1.1" 304 -
+140.117.14.11 - - [12/Oct/2023 13:51:18] "GET /static/img/home.png HTTP/1.1" 304 -
+140.117.14.11 - - [12/Oct/2023 13:51:18] "GET /favicon.ico HTTP/1.1" 404 -
+140.117.14.11 - - [12/Oct/2023 13:51:18] "GET /favicon.ico HTTP/1.1" 404 -
+140.117.14.11 - - [12/Oct/2023 13:51:35] "POST /login HTTP/1.1" 302 -
+140.117.14.11 - - [12/Oct/2023 13:51:35] "GET /backstage/productManager HTTP/1.1" 200 -
+140.117.14.11 - - [12/Oct/2023 13:51:36] "GET /static/offcanvas.js HTTP/1.1" 404 -
+140.117.14.11 - - [12/Oct/2023 13:51:36] "GET /static/offcanvas.css HTTP/1.1" 404 -
+140.117.14.11 - - [12/Oct/2023 13:51:36] "GET /static/img/weblogo.ico HTTP/1.1" 304 -
+140.117.14.11 - - [12/Oct/2023 13:52:04] "POST /backstage/add HTTP/1.1" 302 -
+140.117.14.11 - - [12/Oct/2023 13:52:04] "GET /backstage/productManager HTTP/1.1" 200 -
+140.117.14.11 - - [12/Oct/2023 13:52:04] "GET /static/offcanvas.js HTTP/1.1" 404 -
+140.117.14.11 - - [12/Oct/2023 13:52:05] "GET /static/offcanvas.css HTTP/1.1" 404 -
+ * Detected change in '/home/adminroot/db_class2023/backstage/views/manager.py', reloading
+ * Restarting with stat
+Traceback (most recent call last):
+  File "/home/adminroot/db_class2023/app.py", line 12, in <module>
+    from backstage.views.manager import *
+  File "/home/adminroot/db_class2023/backstage/views/manager.py", line 77
+    if (len(name) < 1 or len(price) < 1 or or is_name_duplicate(name)):
+                                           ^^
+SyntaxError: invalid syntax

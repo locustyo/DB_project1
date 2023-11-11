@@ -3,7 +3,7 @@
 {{ super() }}
 {% endblock head %}
 
-{% block title %} 商品管理 {% endblock title %}
+{% block title %} 影片管理 {% endblock title %}
 
 {% block content %}
 
@@ -32,6 +32,19 @@
 {% endif %}
 {% endwith %}
 
+{% with messages = get_flashed_messages() %}
+{% if messages[0] == '影片名稱重複，新增失敗' %}
+
+<script language="javascript">
+
+  alert('產品名稱重複，新增失敗');
+
+</script>
+
+{% endif %}
+{% endwith %}
+
+
 <script>
     $(document).ready(function(){
         $("#keyword").on("keyup", function() {
@@ -42,6 +55,27 @@
         });
     });
 </script>
+
+<!-- 引用Bootstrap CSS -->
+<link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+<!-- 引用Bootstrap JavaScript和Popper.js -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<!-- 引用Bootstrap Datepicker CSS和JavaScript -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+<script>
+    // 使用jQuery初始化日期選擇器
+    $(document).ready(function () {
+        $('#inputUnitPrice').datepicker({
+            format: 'yyyy-mm-dd', // 指定日期格式
+            autoclose: true      // 選擇日期後自動關閉日期選擇器
+        });
+    });
+</script>
+
+
 &nbsp;
 &nbsp;
 <div class="d-flex justify-content-between container-xxl">
@@ -63,30 +97,31 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="staticBackdropLabel">新增商品</h5>
+                    <h5 class="modal-title" id="staticBackdropLabel">新增影片</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label for="inputProductName" class="form-label">商品名稱</label>
-                        <input type="text" class="form-control" id="inputProductName" name="name" required>
+                        <label for="inputProductTitle" class="form-label">影片名稱</label>
+                        <input type="text" class="form-control" id="inputProductName" name="title" required>
                     </div>
                     <div class="mb-3">
-                        <label for="inputUnitPrice" class="form-label">商品單價</label>
-                        <input type="number" class="form-control" id="inputUnitPrice" name="price" required>
+                        <label for="inputUnitUpload" class="form-label">上傳日期</label>
+			<input type="text" class="form-control" id="inputUnitPrice" name="upload_date" required>
                     </div>
                     <div class="mb-3">
-                        <label for="inputProductCategory" class="form-label">商品種類</label>
-                        <select id="inputProductCategory" class="form-select" name="category" required>
+                        <label for="inputProductClassify" class="form-label">影片分類</label>
+                        <select id="inputProductCategory" class="form-select" name="classify" required>
                             <option selected disabled value="">請選擇類型</option>
-                            <option value="BOOK">BOOK</option>
-                            <option value="CD">CD</option>
-                            <option value="DVD">DVD</option>
+                            <option value="A">普遍級</option>
+                            <option value="B">保護級</option>
+			    <option value="C">輔導級</option>
+                            <option value="D">限制級</option>
                         </select>
                     </div>
                     <div class="mb-3">
-                        <label for="inputProductDesc" class="form-label">商品敘述</label>
-                        <textarea class="form-control" id="inputProductDesc" name="description" required></textarea>
+                        <label for="inputProductLink" class="form-label">影片來源</label>
+                        <textarea class="form-control" id="inputProductDesc" name="link" required></textarea>
                     </div>
                     <!-- <div class="mb-3">
                         <label for="inputProductImg" class="form-label">商品圖片</label><br/>
@@ -103,29 +138,29 @@
 </form>
 
 <br/>
-
 <div class="container-xxl">
+
 
 <form method='post' action={{ url_for('manager.productManager') }} >
 <table id="manager" class="table table-bordered">
     <thead>
         <tr>
-            <th width="10%"><center>商品編號</center></th>
-            <th width="20%"><center>商品名稱</center></th>
-            <th width="15%"><center>商品單價</center></th>
-            <th width="15%"><center>商品類別</center></th>
+            <th width="10%"><center>影片編號</center></th>
+            <th width="20%"><center>影片名稱</center></th>
+            <th width="15%"><center>影片上傳日期</center></th>
+            <th width="15%"><center>影片分級</center></th>
             <th colspan="2"><center>資料操作</center></th>
         </tr>
     </thead>
     <tbody id="product">
     {% for i in book_data %}
         <tr>
-            <td><center>{{ i.商品編號 }}</center></td>
-            <td><center>{{ i.商品名稱 }}</center></td>
-            <td><center>{{ i.商品售價 }}</center></td>
-            <td><center>{{ i.商品類別 }}</center></td>
-            <td><center><button type="submit" value="{{i.商品編號}}" name="edit" class="btn btn-success">編輯商品</button></center></td>
-            <td><center><button type="submit" value="{{i.商品編號}}" name="delete" onclick="return (confirm('你確定要刪除 \'{{ i.商品名稱 }}\' 嗎？'))" class="btn btn-danger">刪除商品</button></center></td>
+            <td><center>{{ i.影片編號 }}</center></td>
+            <td><center>{{ i.影片名稱 }}</center></td>
+            <td><center>{{ i.影片上傳 }}</center></td>
+	    <td><center>{{ i.影片分級 }}</center></td>
+            <td><center><button type="submit" value="{{i.影片編號}}" name="edit" class="btn btn-success">編輯影片</button></center></td>
+            <td><center><button type="submit" value="{{i.影片編號}}" name="delete" onclick="return (confirm('你確定要刪除 \'{{ i.影片名稱 }}\' 嗎？'))" class="btn btn-danger">刪除影片</button></center></td>
         </tr>
     {% endfor %}
     </tbody>

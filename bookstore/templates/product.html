@@ -9,17 +9,29 @@
 
 {% set temp = 'img/' + data.商品圖片 %}
 
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <script language="javascript">
+    {% for message in messages %}
+      alert("{{ message }}");
+    {% endfor %}
+    </script>
+  {% endif %}
+{% endwith %}
+
+
 <br/>
 <div class="row">
 <div class="card" style="width: 20rem;margin-left:5%">
-  <img src={{ url_for('static', filename = temp  ) }} class="card-img-top">
+  <img src='http://img.youtube.com/vi/{{data.商品敘述}}/sddefault.jpg' class="card-img-top">
+
   <div class="card-body">
     <h5 class="card-title">{{ data.商品名稱 }}</h5>
     <p class="card-text"></p>
   </div>
   <ul class="list-group list-group-flush">
-    <li class="list-group-item"><b>商品類別</b>&nbsp;&nbsp;{{ data.類別 }}</li>
-    <li class="list-group-item"><b>商品單價</b>&nbsp;&nbsp;{{ data.單價 }}</li>
+    <li class="list-group-item"><b>影片分級</b>&nbsp;&nbsp;{{ data.類別 }}</li>
+    <li class="list-group-item"><b>上傳日期</b>&nbsp;&nbsp;{{ data.單價 }}</li>
   </ul>
   <div class="card-body">
     <a href="{{ url_for('bookstore.bookstore') }}" class="btn btn-outline-primary">回商品列表</a>
@@ -33,9 +45,10 @@
   <h5 class="card-header">商品介紹</h5>
   <div class="card-body">
     <p class="card-text">
-      {{data.商品敘述}}
+    <iframe width="560" height="315" src="https://www.youtube.com/embed/{{data.商品敘述}}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+
     </p>
-    <button class="btn btn-outline-success" type="submit" value="{{data.商品編號}}" name="pid">加入購物車</a>
+    <!--    <button class="btn btn-outline-success" type="submit" value="{{data.商品編號}}" name="pid">加入購物車</a> -->
   </div>
 </div>
 </form>

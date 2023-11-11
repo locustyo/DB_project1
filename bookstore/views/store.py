@@ -11,9 +11,11 @@ from sqlalchemy import null
 from link import *
 import math
 from base64 import b64encode
-from api.sql import Member, Order_List, Product, Record, Cart
+from api.sql import Member, Order_List, Product, Record, Cart, Transaction, Plan
 
 store = Blueprint('bookstore', __name__, template_folder='../templates')
+
+
 
 @store.route('/', methods=['GET', 'POST'])
 @login_required
@@ -21,7 +23,7 @@ def bookstore():
     result = Product.count()
     count = math.ceil(result[0]/9)
     flag = 0
-    
+
     if request.method == 'GET':
         if(current_user.role == 'manager'):
             flash('No permission')
@@ -65,6 +67,15 @@ def bookstore():
     
     elif 'pid' in request.args:
         pid = request.args['pid']
+        mid = current_user.id
+        purchased = Transaction.check_purchase(pid, mid)  # 檢查是否購買
+        #flash(f"Purchased: {purchased}")
+        if purchased[0][0] == 0:
+            # 如果未購買，顯示警告並重定向
+            flash('您必須先購買該商品才能觀看影片。')
+            return redirect(url_for('bookstore.bookstore'))  # 確保重定向到正確的端點
+
+
         data = Product.get_product(pid)
         
         pname = data[1]
@@ -124,7 +135,8 @@ def bookstore():
             book = {
                 '商品編號': i[0],
                 '商品名稱': i[1],
-                '商品價格': i[2]
+                '商品價格': i[2],
+                'is_purchased': Transaction.check_purchase(i[0], current_user.id)[0][0]                
             }
 
             book_data.append(book)
@@ -136,7 +148,7 @@ def bookstore():
         count = math.ceil(total/9)    
         
         return render_template('bookstore.html', keyword=search, single=single, book_data=book_data, user=current_user.name, page=1, flag=flag, count=count)    
-    
+
     else:
         book_row = Product.get_all_product()
         book_data = []
@@ -146,11 +158,55 @@ def bookstore():
                 '商品編號': i[0],
                 '商品名稱': i[1],
                 '商品價格': i[2],
+                'is_purchased': Transaction.check_purchase(i[0], current_user.id)[0][0]
             }
             if len(book_data) < 9:
                 book_data.append(book)
-        
+
         return render_template('bookstore.html', book_data=book_data, user=current_user.name, page=1, flag=flag, count=count)
+
+#transactions
+@store.route('/transactions', methods=['GET', 'POST'])
+@login_required  # 使用者登入后才可以看
+def transactions():
+    # 获取当前用户的ID
+    mid = current_user.id
+
+    if request.method == 'POST':
+        if 'delete' in request.form:
+            tid = request.form['delete']
+            Transaction.delete_by_tid(tid)
+            flash('交易紀錄已刪除')
+            return redirect(url_for('bookstore.transactions'))
+
+
+    if request.method == 'POST':
+        if current_user.role == 'manager':
+            flash('No permission')
+            return redirect(url_for('manager.home'))
+
+        # 获取商品ID
+        pid = request.form.get('pid')
+
+        # 获取当前时间戳
+        timestamp = datetime.now()
+
+        # 创建 Transaction 实例并保存购买记录
+        transaction = Transaction(pid=pid, user_id=mid, mid=mid, timestamp=timestamp)
+        transaction.save()
+        flash('Purchase saved successfully.')
+        return redirect(url_for('bookstore.transactions'))
+
+    # 对于GET请求，获取用户的所有购买记录
+    purchases = Transaction.get_user_purchases(mid)
+
+    # 返回模板，并传递购买记录
+    return render_template('transactions.html', purchases=purchases)
+
+
+
+
+
 
 # 會員購物車
 @store.route('/cart', methods=['GET', 'POST'])
@@ -325,3 +381,23 @@ def only_cart():
         product_data.append(product)
     
     return product_data
+
+
+@store.route('/plans')
+@login_required
+def plans():
+    all_plans = Plan.get_all_plans()
+    plans_details = []
+
+    for plan in all_plans:
+        videos = Plan.get_videos_by_plan(plan[0])  # 假設計劃ID是第一個字段
+        plans_details.append({
+            'pid': plan[0],
+            'title': plan[1],
+            'period': plan[2],
+            'max_allow': plan[3],
+            'videos': videos
+        })
+
+    return render_template('plans.html', plans_details=plans_details)
+

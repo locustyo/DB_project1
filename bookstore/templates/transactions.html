@@ -1,0 +1,76 @@
+{% extends "frontstage.html" %}
+{% block head %}
+{{ super() }}
+{% endblock head %}
+
+{% block title %}購買清單{% endblock title%}
+
+{% block content %}
+
+{% with messages = get_flashed_messages() %}
+{% if messages[0] == 'No permission' %}
+  
+<script language="javascript">
+  alert('您沒有使用者的權限喔！');
+</script>
+
+{% endif %}
+{% endwith %}
+
+<br/>
+<div class="container-xl">
+  <br/>
+  <form method="post" action={{ url_for('bookstore.transactions') }}>
+    <table class="table table-bordered">
+      <tr>
+        <th><center>交易編號</center></th>
+	<th><center>影片編號</center></th>
+        <th><center>影片名稱</center></th>
+        <th><center>上傳日期</center></th>
+        <th><center>商品操作</center></th>
+      </tr>
+      {% for purchase in purchases %}
+      {% if purchase[1] %} 
+      <tr>
+        <td> <center>{{ purchase[0] }}</center></td>
+        <td> <center>{{ purchase[1] }}</center></td>
+        <td> <center>{{ purchase[2] }}</center></td>
+	<td> <center>{{ purchase[3] }}</center></td>
+        <td width="20%">
+          <center></center></td><td><center>
+            <button class="btn btn-danger" type="submit" value="{{purchase[0]}}" name="delete" onclick="return (confirm('你確定要刪除 \'{{  purchase[2]}}\' 嗎？'))">
+            退貨</button>
+          </center>
+      </td>
+      </tr>
+      {% endif %}
+      {% endfor %}
+    </table></form>
+    <form method="post" action={{ url_for('bookstore.transactions') }}>
+    <table class="table table-bordered">
+      <tr>
+        <th><center>交易編號</center></th>
+        <th><center>方案編號</center></th>
+        <th><center>方案名稱</center></th>
+        <th><center>訂閱日期</center></th>
+        <th><center>商品操作</center></th>
+      </tr>
+      {% for purchase in purchases %}
+      {% if purchase[4] %} 
+      <tr>
+        <td> <center>{{ purchase[0] }}</center></td>
+        <td> <center>{{ purchase[4] }}</center></td>
+        <td> <center>{{ purchase[5] }}</center></td>
+        <td> <center>{{ purchase[6] }}</center></td>
+        <td width="20%">
+          <center></center></td><td><center>
+            <button class="btn btn-danger" type="submit" value="{{purchase[0]}}" name="delete" onclick="return (confirm('你確定要刪>
+除 \'{{  purchase[2]}}\' 嗎？'))">
+            退貨</button>
+          </center>
+      </td>
+      </tr>
+      {% endif %}
+      {% endfor %}
+    </table></form>
+{% endblock content%}
