@@ -7,9 +7,21 @@
 
 {% block content %}
 <br/>
-{% if plans_details %}
-  {% for plan in plans_details %}
-    <div class="row">
+<style>
+  .cards-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+  }
+
+  .card {
+    margin-left: 5%;
+    margin-bottom: 20px; /* 为卡片添加一些底部间距 */
+  }
+</style>
+
+<div class="cards-container">
+{% for plan in plans_details %}
       <div class="card" style="width: 20rem;margin-left:5%">
         <div class="card-body">
           <h5 class="card-title">{{ plan.title }}</h5>
@@ -25,18 +37,27 @@
             </li>
           </ul>
         </div>
-	<form method="post" action="{{ url_for('bookstore.transactions') }}">
-  <input type="hidden" name="pid" value="{{ plan.pid }}">
-  <button type="submit" class="btn btn-primary">訂閱</button>
-</form>
-<br>
-      </div>
-<br>
-    </div>
-    <br>    
-  {% endfor %}
-{% else %}
-  <p>沒有促銷方案。</p>
-{% endif %}
+  <form method="post" action="{{ url_for('bookstore.transactions') }}">
+    <input type="hidden" name="pid" value="{{ plan.pid }}">
+    {% if check_purchase_p(plan.pid, current_user.id)[0][0] == 0 %}
+      <button type="submit" class="btn btn-primary">訂閱</button>
+    {% else %}
+      <button type="button" class="btn btn-primary" disabled>已訂閱</button>
+    {% endif %}
+  </form>
+
+  <form method="post" action="{{ url_for('bookstore.plans') }}">
+    <input type="hidden" name="pid" value="{{ plan.pid }}">
+    {% if check_plan_user(current_user.id,request.headers.get('User-Agent'), plan.pid) %}
+    <button type="submit" name="action" value="logout" class="btn btn-warning" {% if check_purchase_p(plan.pid, current_user.id)[0][0] == 0 %} hidden {% endif %}>本機已登入，點選登出</button>
+    {% else %}
+    <button type="submit" name="action" value="login" class="btn btn-success" {% if check_purchase_p(plan.pid, current_user.id)[0][0] == 0 %} hidden {% endif %}>本機未登入，點選登入</button>
+    {% endif %}
+    {{ check_plan_user(current_user.id,request.headers.get('User-Agent'), plan.pid) }}
+  </form>
+  </div>
+{% endfor %}
+</div>
+
 {% endblock content %}
 

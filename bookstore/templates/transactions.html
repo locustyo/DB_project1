@@ -52,7 +52,7 @@
         <th><center>交易編號</center></th>
         <th><center>方案編號</center></th>
         <th><center>方案名稱</center></th>
-        <th><center>訂閱日期</center></th>
+	<th><center>訂閱日期<br>到期日</center></th>
         <th><center>商品操作</center></th>
       </tr>
       {% for purchase in purchases %}
@@ -61,7 +61,7 @@
         <td> <center>{{ purchase[0] }}</center></td>
         <td> <center>{{ purchase[4] }}</center></td>
         <td> <center>{{ purchase[5] }}</center></td>
-        <td> <center>{{ purchase[6] }}</center></td>
+	<td> <center>{{ purchase[6] }}<br>{{ purchase[7] }}</center></td>
         <td width="20%">
           <center></center></td><td><center>
             <button class="btn btn-danger" type="submit" value="{{purchase[0]}}" name="delete" onclick="return (confirm('你確定要刪>

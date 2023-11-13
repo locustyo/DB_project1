@@ -11,7 +11,7 @@ from sqlalchemy import null
 from link import *
 import math
 from base64 import b64encode
-from api.sql import Member, Order_List, Product, Record, Cart, Transaction, Plan
+from api.sql import DB, Member, Order_List, Product, Record, Cart, Transaction, Plan, Device
 
 store = Blueprint('bookstore', __name__, template_folder='../templates')
 
@@ -23,7 +23,10 @@ def bookstore():
     result = Product.count()
     count = math.ceil(result[0]/9)
     flag = 0
-
+    
+    device_id = request.headers.get('User-Agent')
+    Device.login_device(current_user.id, device_id)
+    
     if request.method == 'GET':
         if(current_user.role == 'manager'):
             flash('No permission')
@@ -70,7 +73,7 @@ def bookstore():
         mid = current_user.id
         purchased = Transaction.check_purchase(pid, mid)  # 檢查是否購買
         #flash(f"Purchased: {purchased}")
-        if purchased[0][0] == 0:
+        if purchased == 0:
             # 如果未購買，顯示警告並重定向
             flash('您必須先購買該商品才能觀看影片。')
             return redirect(url_for('bookstore.bookstore'))  # 確保重定向到正確的端點
@@ -136,7 +139,7 @@ def bookstore():
                 '商品編號': i[0],
                 '商品名稱': i[1],
                 '商品價格': i[2],
-                'is_purchased': Transaction.check_purchase(i[0], current_user.id)[0][0]                
+                'is_purchased': Transaction.check_purchase(i[0], current_user.id)  # 直接使用返回的布尔值
             }
 
             book_data.append(book)
@@ -158,7 +161,7 @@ def bookstore():
                 '商品編號': i[0],
                 '商品名稱': i[1],
                 '商品價格': i[2],
-                'is_purchased': Transaction.check_purchase(i[0], current_user.id)[0][0]
+                'is_purchased': Transaction.check_purchase(i[0], current_user.id)
             }
             if len(book_data) < 9:
                 book_data.append(book)
@@ -185,22 +188,17 @@ def transactions():
             flash('No permission')
             return redirect(url_for('manager.home'))
 
-        # 获取商品ID
         pid = request.form.get('pid')
 
-        # 获取当前时间戳
         timestamp = datetime.now()
 
-        # 创建 Transaction 实例并保存购买记录
         transaction = Transaction(pid=pid, user_id=mid, mid=mid, timestamp=timestamp)
         transaction.save()
         flash('Purchase saved successfully.')
         return redirect(url_for('bookstore.transactions'))
 
-    # 对于GET请求，获取用户的所有购买记录
     purchases = Transaction.get_user_purchases(mid)
 
-    # 返回模板，并传递购买记录
     return render_template('transactions.html', purchases=purchases)
 
 
@@ -383,11 +381,24 @@ def only_cart():
     return product_data
 
 
-@store.route('/plans')
+@store.route('/plans', methods=['GET', 'POST'])
 @login_required
 def plans():
     all_plans = Plan.get_all_plans()
     plans_details = []
+    
+    if request.method == 'POST':
+        action = request.form.get('action')
+        pid = request.form.get('pid')
+        if action == 'login':
+            # 处理登录逻辑
+            flash('点击登录')
+            handle_plan(action, current_user.id, request.headers.get('User-Agent'), pid)
+        elif action == 'logout':
+            # 处理登出逻辑
+            flash('点击登出')
+            handle_plan(action, current_user.id, request.headers.get('User-Agent'), pid)
+
 
     for plan in all_plans:
         videos = Plan.get_videos_by_plan(plan[0])  # 假設計劃ID是第一個字段
@@ -400,4 +411,25 @@ def plans():
         })
 
     return render_template('plans.html', plans_details=plans_details)
+
+
+def handle_plan(action, mid, did, pid):
+    sql_check = 'SELECT count(*) FROM device WHERE mid = :mid AND did = :did AND pid = :pid'
+    result = DB.execute_input(DB.prepare(sql_check), {'mid': mid, 'did': did, 'pid': pid})
+    count = DB.fetchall(result)[0][0]
+
+    if count == 0:
+        sql_update_pid = 'UPDATE DEVICE SET pid = :pid WHERE mid = :mid AND did = :did AND pid IS NULL'
+        DB.execute_input(DB.prepare(sql_update_pid), {'mid': mid, 'did': did, 'pid': pid})
+        DB.commit()
+
+    if action == 'login':
+        sql_login = 'UPDATE DEVICE SET ONLINE_D = \'1\' WHERE mid = :mid AND did = :did AND pid = :pid'
+        DB.execute_input(DB.prepare(sql_login), {'mid': mid, 'did': did, 'pid': pid})
+    elif action == 'logout':
+        sql_logout = 'UPDATE DEVICE SET ONLINE_D = \'0\' WHERE mid = :mid AND did = :did AND pid = :pid'
+        DB.execute_input(DB.prepare(sql_logout), {'mid': mid, 'did': did, 'pid': pid})
+
+    DB.commit()
+
 

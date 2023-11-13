@@ -44,15 +44,15 @@
           <div class="card">
             <div class="card-body">
               <h5 class="card-title">{{book.商品名稱}}</h5>
-              <p class="card-text">${{book.商品價格}}</p>
+              <p class="card-text">上傳日期:{{book.商品價格}}</p>
               
               <a href="{{ url_for('bookstore.bookstore', pid=book.商品編號) }}" class="btn btn-outline-primary">觀看影片</a>
-            {% if check_purchase(book.商品編號, current_user.id)[0][0] == 0 %}
-              <button class="btn btn-outline-success" type="submit" value="{{ book.商品編號 }}" name="pid">購買</button>
-            {% else %}
-              <button class="btn btn-outline-success" type="button" disabled>可觀看</button>
-            {% endif %}
-            </div>
+	      {% if check_purchase(book.商品編號, current_user.id) %}
+	      <button class="btn btn-outline-success" type="button" disabled>可觀看</button>
+	      {% else %}
+	      <button class="btn btn-outline-success" type="submit" value="{{ book.商品編號 }}" name="pid">購買</button>
+	      {% endif %}
+	    </div>
           </div>
         </div>
 

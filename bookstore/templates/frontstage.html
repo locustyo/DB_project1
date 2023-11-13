@@ -34,16 +34,41 @@
     }
   </style>
 <body class="bg-light">
-{% with messages = get_flashed_messages() %}
-  {% if messages %}
-    <script language="javascript">
-    {% for message in messages %}
-      alert("{{ message }}");
-    {% endfor %}
-    </script>
-  {% endif %}
-{% endwith %}
-    <nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-dark">
+	<!-- 模板 -->
+	<div class="modal fade" id="messageModal" tabindex="-1" arialabelledby="messageModalLabel" aria-hidden="true">
+		 <div class="modal-dialog">
+			  <div class="modal-content">
+				   <div class="modal-header">
+					    <h5 class="modal-title" id="messageModalLabel">Message</h5>
+					     <button type="button" class="btn-close" data-bsdismiss="modal" aria-label="Close"></button>
+					      </div>
+					       <div class="modal-body" id="modalMessageBody">
+						       {% with messages = get_flashed_messages() %}
+						        {% if messages %}
+							 <script>
+								  document.addEventListener('DOMContentLoaded', (event) => {
+																	    {% for message in messages %}
+																	    document.getElementById("modalMessageBody").innerText 
+																		   = "{{ message }}";
+																	    var messageModal = new 
+																		   bootstrap.Modal(document.getElementById('messageModal'));
+																	    messageModal.show();
+																	    {% endfor %}
+																	    });
+								  </script>
+								   {% endif %}
+								   {% endwith %}
+								    </div>
+								     <div class="modal-footer">
+									      <button type="button" class="btn btn-secondary" data-bsdismiss="modal">Close</button>
+									       </div>
+									        </div>
+										 </div>
+	</div>
+	<!-- end -->
+
+
+	<nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-dark">
         <div class="container-fluid container-xxl">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="white" class="bi bi-easel2" viewBox="0 0 16 16">
                 <path fill-rule="evenodd" d="M8 0a.5.5 0 0 1 .447.276L8.81 1h4.69A1.5 1.5 0 0 1 15 2.5V11h.5a.5.5 0 0 1 0 1h-2.86l.845 3.379a.5.5 0 0 1-.97.242L12.11 14H3.89l-.405 1.621a.5.5 0 0 1-.97-.242L3.36 12H.5a.5.5 0 0 1 0-1H1V2.5A1.5 1.5 0 0 1 2.5 1h4.691l.362-.724A.5.5 0 0 1 8 0ZM2 11h12V2.5a.5.5 0 0 0-.5-.5h-11a.5.5 0 0 0-.5.5V11Zm9.61 1H4.39l-.25 1h7.72l-.25-1Z"/>

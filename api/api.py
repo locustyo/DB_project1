@@ -31,6 +31,7 @@ def login():
 
         account = request.form['account']
         password = request.form['password']
+        selected_role = request.form.get('role')
         data = Member.get_member(account) 
 
         try:
@@ -46,6 +47,10 @@ def login():
             user = User()
             user.id = user_id
             login_user(user)
+
+            if selected_role and identity != selected_role:
+                Member.update_role(user_id, selected_role)
+                identity = selected_role
 
             if( identity == 'user'):
                 return redirect(url_for('bookstore.bookstore'))

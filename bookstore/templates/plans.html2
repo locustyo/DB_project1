@@ -1,0 +1,53 @@
+{% extends "frontstage.html" %}
+{% block head %}
+{{ super() }}
+{% endblock head %}
+
+{% block title %}BookStore{% endblock title %}
+
+{% block content %}
+<br/>
+{% if plans_details %}
+  {% for plan in plans_details %}
+    <div class="row">
+      <div class="card" style="width: 20rem;margin-left:5%">
+        <div class="card-body">
+          <h5 class="card-title">{{ plan.title }}</h5>
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item"><b>有效期限</b>: {{ plan.period }}</li>
+            <li class="list-group-item"><b>最大允許裝置數</b>: {{ plan.max_allow }}</li>
+            <li class="list-group-item"><b>包含影片</b>:
+              <ul>
+                {% for video in plan.videos %}
+                  <li>{{ video }}</li>
+                {% endfor %}
+              </ul>
+            </li>
+          </ul>
+        </div>
+	<form method="post" action="{{ url_for('bookstore.transactions') }}">
+  <input type="hidden" name="pid" value="{{ plan.pid }}">
+  {% if check_purchase_p(plan.pid, current_user.id)[0][0] == 0 %}
+  <button type="submit" class="btn btn-primary" >訂閱</button>
+  {% else %}
+  <button type="submit" class="btn btn-primary" disabled>已訂閱</button>
+  <form method="post" action="{{ url_for('bookstore.plans') }}">
+	{% if check_plan_user(current_user.id,request.headers.get('User-Agent') ,plan.pid) %}
+	<button type="submit" name="action" value="logout" class="btn btn-warning">本機已登入，點選登出</button>
+	{% else %}
+	<button type="submit" name="action" value="login" class="btn btn-success">本機未登入，點選登入</button>
+	{% endif %}
+  </form>  
+  {% endif %}
+</form>
+<br>
+      </div>
+<br>
+    </div>
+    <br>    
+  {% endfor %}
+{% else %}
+  <p>沒有促銷方案。</p>
+{% endif %}
+{% endblock content %}
+

@@ -17,6 +17,8 @@ from werkzeug.utils import secure_filename
 app = Flask(__name__)
 app.secret_key = 'Your Key' 
 app.jinja_env.globals.update(check_purchase=Transaction.check_purchase)
+app.jinja_env.globals.update(check_purchase_p=Transaction.check_purchase_p)
+app.jinja_env.globals.update(check_plan_user=Plan.check_plan_user)
 app.register_blueprint(api, url_prefix='/')
 app.register_blueprint(store, url_prefix='/bookstore')
 app.register_blueprint(analysis, url_prefix='/backstage')

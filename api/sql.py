@@ -1,6 +1,6 @@
 from typing import Optional
 from link import *
-from flask import flash
+from flask import flash, request
 
 class DB():
     def connect():
@@ -57,6 +57,12 @@ class Member():
     def get_role(userid):
         sql = 'SELECT IDENTITY, NAME FROM MEMBER WHERE MID = :id '
         return DB.fetchone(DB.execute_input( DB.prepare(sql), {'id':userid}))
+
+    def update_role(user_id, new_role):
+        sql = "UPDATE MEMBER SET IDENTITY = :new_role WHERE MID = :user_id"
+        DB.execute_input(DB.prepare(sql), {'new_role': new_role, 'user_id': user_id})
+        DB.commit()
+
 
 class Cart():
     def check(user_id):
@@ -200,31 +206,61 @@ class Transaction():
         DB.execute_input(DB.prepare(sql), {'timestamp': self.timestamp, 'pid': self.pid, 'mid': self.mid})
         DB.commit()
 
+    def check_purchase_p(pid, mid):
+        sql = 'SELECT count(*) from transactions where buy_id = :pid and mid = :mid'
+        result = DB.execute_input(DB.prepare(sql), {'pid' : pid, 'mid': mid})
+        purchases = DB.fetchall(result)
+        return purchases
+
     def check_purchase(pid, mid):
-        sql = 'SELECT count(*) FROM transactions WHERE buy_id = :pid AND mid = :mid'
-#        flash(f"SQL:{sql},pid: {pid},mid: {mid}")
-        sql = '''
-        SELECT count(*)
-        FROM transactions
-        WHERE (buy_id = :pid AND mid = :mid)
-           OR (buy_id IN (SELECT pID FROM contain WHERE vids LIKE '%' || :pid || '%') AND mid = :mid)
-        '''
+        did = request.headers.get('User-Agent')
+        
+        sql = 'SELECT count(*) FROM TRANSACTIONS where buy_id =:pid and mid=:mid';
         result = DB.execute_input(DB.prepare(sql), {'pid': pid, 'mid': mid})
-        count = DB.fetchall(result)
-#        flash(f"count: {count}")
-        return count
+        count1 = DB.fetchall(result)[0][0]
+        
+        sql_count2 = '''
+            SELECT count(*) 
+            FROM transactions 
+            WHERE mid = :mid AND buy_id IN (
+                    SELECT pID 
+                    FROM contain 
+                    WHERE vids LIKE '%' || :pid || '%'
+                )
+        '''
+        count2 = DB.fetchall(DB.execute_input(DB.prepare(sql_count2), {'pid': pid, 'mid': mid}))[0][0]
+ 
+        sql_count3 = '''
+            SELECT count(*)
+            from device
+            WHERE mid = :mid AND did = :did AND pid = :pid AND pid is not null AND online_d = '1'
+            '''
+        count3 = DB.fetchall(DB.execute_input(DB.prepare(sql_count3), {'pid':pid, 'mid': mid ,'did':did}))[0][0]
+        
+        sql_count4 = 'select count(*) from device where mid = :mid AND pid = :pid'
+        count4 = DB.fetchall(DB.execute_input(DB.prepare(sql_count4), {'pid':pid, 'mid': mid }))
+
+        sql_count5 = 'SELECT COALESCE(MAX(TO_NUMBER(maxallow)), 0) FROM plans WHERE pid = :pid'
+        count5 = DB.fetchall(DB.execute_input(DB.prepare(sql_count5), {'pid':pid }))[0][0]
+        
+        flash(f"count4={count4}")
+
+        return count1 or ( count2 and count3 and count4 <= count5 )
+
+
 
     def get_user_purchases(mid):
         sql = '''
-        SELECT t.tid, v.vId, v.title, v.upload_date, p.pId, p.title as plan_title,t.TRANSACTION_DATE
-FROM GROUP10.TRANSACTIONS t
-LEFT JOIN GROUP10.VIDEOS v ON v.vId = t.BUY_ID AND t.BUY_ID LIKE 'v%'
-LEFT JOIN GROUP10.PLANS p ON p.pId = t.BUY_ID AND t.BUY_ID NOT LIKE 'v%'
-where mid = :mid
+        SELECT t.tid, v.vId, v.title, v.upload_date, p.pId, p.title as plan_title,TO_CHAR(TO_DATE(t.TRANSACTION_DATE, 'DD-MON-YY'), 'YYYY-MM-DD'),
+            TO_CHAR(ADD_MONTHS(t.TRANSACTION_DATE, TO_NUMBER(REPLACE(p.period, 'm', ''))),'YYYY-MM-DD') as expiry_date
+        FROM GROUP10.TRANSACTIONS t
+        LEFT JOIN GROUP10.VIDEOS v ON v.vId = t.BUY_ID AND t.BUY_ID LIKE 'v%'
+        LEFT JOIN GROUP10.PLANS p ON p.pId = t.BUY_ID AND t.BUY_ID NOT LIKE 'v%'
+        where mid = :mid
         '''
         result = DB.execute_input(DB.prepare(sql), {'mid': mid})
         purchases = DB.fetchall(result)
-        flash(f"purchases: {purchases}")
+        #flash(f"purchases: {purchases}")
         return purchases
 
     def delete_by_tid(tid):
@@ -244,4 +280,25 @@ class Plan():
         video_ids = DB.fetchall(result)
         return video_ids
 
+    def check_plan_user(mid, did, pid):
+        sql = "SELECT online_d FROM device WHERE mid=:mid AND did=:did AND pid=:pid"
+        params = {'mid': mid, 'did': did, 'pid': pid}
+        result = DB.execute_input(DB.prepare(sql), params)
+        online_d = DB.fetchall(result)
+        if online_d:
+            return online_d[0][0] == '1'
+        else:
+            return False
+
+
+class Device():
+    def login_device(mid, did):
+        sql_check = 'SELECT count(*) FROM device WHERE mID = :mid AND dID = :did and pid is null'
+        result = DB.execute_input(DB.prepare(sql_check), {'mid': mid, 'did': did})
+        count = DB.fetchall(result)[0][0]
+        #flash(count)
+        if count == 0:
+            sql_insert = 'INSERT INTO device (mID, dID, online_d) VALUES (:mid, :did, \'1\')'
+            DB.execute_input(DB.prepare(sql_insert), {'mid': mid, 'did': did})
+            DB.commit()
 
